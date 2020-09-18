@@ -8,7 +8,7 @@
  - Chỉnh sửa file **contest.json** trong thư mục **Hackathon** trước khi chạy server
  ```json
  {
-    "timestart": <Thời gian bắt đầu>,
+    "timestart": <Thời_gian_bắt_đầu>,
     "duration": <Thời gian làm bài>,
     "problem": [
         {
