@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+{% block content %}
+    <embed src="{{ url_for('static', filename='statements/CSP_Hackathon_2019.pdf') }}" width = "100%" height = "600px"/>
+{% endblock content %}
+
+{% block contest_materials %}
+<div class="content-section">
+    <center><h3>Các tài liệu liên quan</h3></center>
+    <center> <h5> <a href="#">Download đề bài</a> </h5> </center>
+    <center> <h5> <a href="#">Download game</a> </h5> </center>
+</div>
+{% set char="ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+
+{% for i in range(1, nProblems + 1) %}
+    <script>
+        $('#problem{{i}}').on('shown.bs.modal', function () {
+            $('#problem{{i}}').trigger('focus')
+        })
+    </script>
+{% endfor %}
+<div class="content-section">
+    <center><h3>Lịch sử nộp bài</h3></center>
+    <center><table>
+        {% for i in range(1, nProblems + 1)%}
+            {% if i % 3 == 1 %}
+                <tr>
+            {% endif %}
+
+            {% set color = ""%}
+
+            {% if scores[i - 1] != 100 %}
+                {% if submissions[i - 1] == '' %}
+                    {% set color = "grey"%}
+                {% elif scores[i - 1] == 0 %}
+                    {% set color = "red"%}
+                {% else %}
+                    {% set color = "#FF5C00"%}
+                {% endif %}
+            {% else %}
+                {% set color = "green"%}
+            {% endif %}
+
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#problem{{i}}" class="list-group-item list-group-item-light" style="color: {{color}}">{{char[i - 1]}}: {{scores[i - 1]}}</li>
+                </ul>
+            </th>
+
+            {% if i % 3 == 0 %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+        <!--<tr>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light" style="color: green">A: 100 </li>
+                </ul>
+            </th>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light" style="color: green">B: 100 </li>
+                </ul>
+            </th>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light" style="color: green">C: 100 </li>
+                </ul>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light" style="color: red">D: 0 </li>
+                </ul>
+            </th>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light" style="color: darkorange">E: 50 </li>
+                </ul>
+            </th>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light" style="color: red">F: 0 </li>
+                </ul>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light">G: </li>
+                </ul>
+            </th>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light" style="color: darkorange">H: 20 </li>
+                </ul>
+            </th>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light">I: </li>
+                </ul>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light">J: </li>
+                </ul>
+            </th>
+            <th>
+                <ul class="list-group">
+                    <li data-toggle="modal" data-target="#test" class="list-group-item list-group-item-light">K: </li>
+                </ul>
+            </th>
+        </tr>-->
+    </table></center>
+
+
+    <!-- Modal -->
+    {% for i in range(1, nProblems + 1) %}
+    
+        <div class="modal fade" id="problem{{i}}" tabindex="-1" role="dialog" aria-labelledby="problem{{i}}Label" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="problem{{i}}Label">Chi tiết chấm bài {{char[i - 1]}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    {{submissions[i - 1] | safe}}
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock contest_materials %}

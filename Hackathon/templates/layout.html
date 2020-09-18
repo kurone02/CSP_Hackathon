@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0, shrink-to-fit=yes">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    {% if title %}
+        <title>CSP Hackathon - {{ title }}</title>
+    {% else %}
+        <title>CSP Hackathon</title>
+    {% endif %}
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="/">CSP HACKATHON</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="/">Trang chủ</a>
+              <a class="nav-item nav-link" href="/statement">Đề bài</a>
+              <a class="nav-item nav-link" href="/submit">Nộp bài</a>
+              <a class="nav-item nav-link" href="/standings">Bảng điểm</a>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+              {% if current_user.is_authenticated %}
+                {% if current_user.username == "TeamHackathon2020" %}
+                  <a class="nav-item nav-link" href="{{ url_for('new_post') }}">Tạo bài viết mới</a>
+                {% endif %}
+                <a class="nav-item nav-link" href="{{url_for('profile')}}">Xin chào {{current_user.username}}</a>
+                <a class="nav-item nav-link" href="{{url_for('logout')}}">Đăng xuất</a>
+              {% else %}
+                <a class="nav-item nav-link" href="{{url_for('login')}}">Đăng nhập</a>
+                <a class="nav-item nav-link" href="{{url_for('register')}}">Đăng ký</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{category}}">
+                  {{message}}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          {% block content %}{% endblock %}
+        </div>
+        <div class="col-md-4">
+          <div class="content-section">
+            {% if time_left == 0 %}
+              <center><h3>Kỳ thi đã kết thúc</h3></center>
+              <center><p class='text-muted'><h5>CSP Hackathon 2020</h5></center>
+              <progress style="width: 100%" id="temp" max="{{duration}}" value="{{time_left}}"></progress>
+            {% else %}
+              <center><h3>Kỳ thi đang diễn ra</h3></center>
+              <center><p class='text-muted'><h5>CSP Hackathon 2020</h5></center>
+              <progress style="width: 100%" id="temp" max="{{duration}}" value="{{time_left}}"></progress>
+              <center><p style='color: gray' id='timer'>{{hour}} giờ {{minute}} phút {{second}} giây</p></center>
+            {% endif %}
+            
+            <!--<center>
+              <form action="{{ url_for('submit') }}">
+                  <input class="btn btn-outline-info" type="submit" value="Nộp bài"/>
+              </form>
+            </center>-->
+          </div>
+          {% block contest_materials %}{% endblock contest_materials %}
+        </div>
+      </div>
+    </main>
+    </main>
+
+
+    <script>
+      const timerElement = document.getElementById("timer");
+      const temp = document.getElementById("temp");
+      let time_left = temp.value;
+      const interval = setInterval(()=>{
+        if(time_left <= 1){
+          clearInterval(interval);
+        }
+        let time_counter = time_left - 1;
+        time_left = time_left - 1;
+        let hour = Math.floor(time_counter / 3600);
+        time_counter = time_counter % 3600;
+        let minute = Math.floor(time_counter / 60);
+        time_counter = time_counter % 60;
+        let second = time_counter;
+        temp.value = time_left;
+        timerElement.innerText = hour + " giờ " + minute + " phút " + second + " giây";
+      }, 1000)
+    </script>
+</body>
+</html>
