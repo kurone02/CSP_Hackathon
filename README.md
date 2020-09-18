@@ -5,7 +5,7 @@
  Chỉ cần download là xong
  
 ## Thiết lập kỳ thi
- - Chỉnh sửa file **contest.json** trong thư mục Hackathon **trước khi chạy server**
+ - Chỉnh sửa file **contest.json** trong thư mục **Hackathon** trước khi chạy server
  
 ## Chạy server
  ```bash
