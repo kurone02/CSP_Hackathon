@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-    <embed src="{{ url_for('static', filename='statements/CSP_Hackathon_2019.pdf') }}" width = "100%" height = "600px"/>
+    <embed src="{{ url_for('protected', filename='statements/CSP_Hackathon_2019.pdf') }}" width = "100%" height = "600px"/>
 {% endblock content %}
 
 {% block contest_materials %}
 <div class="content-section">
     <center><h3>Các tài liệu liên quan</h3></center>
-    <center> <h5> <a href="#">Download đề bài</a> </h5> </center>
-    <center> <h5> <a href="#">Download game</a> </h5> </center>
+    <center> <h5> <a href="{{ url_for('protected', filename='statements/CSP_Hackathon_2019.pdf') }}">Download đề bài</a> </h5> </center>
+    <center> <h5> <a href="{{ url_for('protected', filename='statements/game.zip') }}">Download game</a> </h5> </center>
 </div>
 {% set char="ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
 

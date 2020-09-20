@@ -1,36 +1,47 @@
 {
-    "timestart": 1600182874,
-    "duration": 300,
+    "timestart": "2020_09_20_01_16_00",
+    "duration": 180,
     "problem": [
         {
             "problem_id": "A",
             "problem_name": "Clothes",
             "nSubtasks": 4,
             "subtask_1": "1",
+            "checker_1": "integer",
             "subtask_2": "1",
+            "checker_2": "integer",
             "subtask_3": "1",
-            "subtask_4": "1"
+            "checker_3": "integer",
+            "subtask_4": "1",
+            "checker_4": "integer"
         },
         {
             "problem_id": "B",
             "problem_name": "Clock",
             "nSubtasks": "1",
-            "subtask_1": "1"
+            "subtask_1": "3.141592653589793",
+            "checker_1": "real",
+            "eps_1": "1e-9"
         },
         {
             "problem_id": "C",
             "problem_name": "Find Array",
             "nSubtasks": "1",
-            "subtask_1": "1"
+            "subtask_1": "1",
+            "checker_1": "integer"
         },
         {
             "problem_id": "D",
             "problem_name": "GCD",
             "nSubtasks": 4,
             "subtask_1": "1",
+            "checker_1": "integer",
             "subtask_2": "1",
+            "checker_2": "integer",
             "subtask_3": "1",
-            "subtask_4": "1"
+            "checker_3": "integer",
+            "subtask_4": "1",
+            "checker_4": "integer"
         },
         {
             "problem_id": "E",

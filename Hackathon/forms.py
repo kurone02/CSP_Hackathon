@@ -28,11 +28,13 @@ class UpdateAccountForm(FlaskForm):
     submit = SubmitField('Cập nhật')
 
     def validate_current_password(self, current_password):
-        if not bcrypt.check_password_hash(current_user.password,self.current_password.data):
+        if ((not current_user.repass) and current_user.password != current_password.data) \
+        or (current_user.repass and (not bcrypt.check_password_hash(current_user.password, current_password.data))):
             raise ValidationError('Mật khẩu cũ không chính xác')
 
     def validate_new_password(self, new_password):
-        if bcrypt.check_password_hash(current_user.password, new_password.data):
+        if ((not current_user.repass) and current_user.password == new_password.data) \
+        or (current_user.repass and bcrypt.check_password_hash(current_user.password, new_password.data)):
             raise ValidationError('Mật khẩu mới phải khác mật khẩu cũ')
 
 class PostForm(FlaskForm):

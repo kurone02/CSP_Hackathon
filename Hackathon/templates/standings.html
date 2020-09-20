@@ -98,13 +98,19 @@
                 {% endwith %}
                 <div class="content-section">
                     <center><h3>
-                        {% if time_left <= 0 %}
+                        {% if time_left > duration %}
+                            Kỳ thi chưa bắt đầu
+                        {% elif time_left <= 0 %}
                             Bảng xếp hạng chính thức
                         {% else %}
                             Bảng xếp hạng hiện tại
                         {% endif %}
                     </h3></center>
-                    {% if time_left == 0 %}
+                    {% if time_left > duration %}
+                        <center><p class='text-muted'><h5>CSP Hackathon 2020</h5></center>
+                        <progress style="width: 100%" id="temp" max="{{time_left - duration}}" value="{{time_left - duration}}"></progress>
+                        <center><p style='color: gray' id='timer'>{{hour}} giờ {{minute}} phút {{second}} giây</p></center>
+                    {% elif time_left <= 0 %}
                         <center><p class='text-muted'><h5>CSP Hackathon 2020</h5></center>
                         <progress style="width: 100%" id="temp" max="{{duration}}" value="{{time_left}}"></progress>
                     {% else %}

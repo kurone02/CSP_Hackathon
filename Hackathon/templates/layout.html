@@ -38,7 +38,7 @@
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
               {% if current_user.is_authenticated %}
-                {% if current_user.username == "TeamHackathon2020" %}
+                {% if current_user.username == "TeamHackathon2020" or current_user.username == "kurone02" %}
                   <a class="nav-item nav-link" href="{{ url_for('new_post') }}">Tạo bài viết mới</a>
                 {% endif %}
                 <a class="nav-item nav-link" href="{{url_for('profile')}}">Xin chào {{current_user.username}}</a>
@@ -68,7 +68,12 @@
         </div>
         <div class="col-md-4">
           <div class="content-section">
-            {% if time_left == 0 %}
+            {% if time_left > duration %}
+              <center><h3>Kỳ thi chưa bắt đầu</h3></center>
+              <center><p class='text-muted'><h5>CSP Hackathon 2020</h5></center>
+              <progress style="width: 100%" id="temp" max="{{time_left - duration}}" value="{{time_left - duration}}"></progress>
+              <center><p style='color: gray' id='timer'>{{hour}} giờ {{minute}} phút {{second}} giây</p></center>
+            {% elif time_left == 0 %}
               <center><h3>Kỳ thi đã kết thúc</h3></center>
               <center><p class='text-muted'><h5>CSP Hackathon 2020</h5></center>
               <progress style="width: 100%" id="temp" max="{{duration}}" value="{{time_left}}"></progress>
