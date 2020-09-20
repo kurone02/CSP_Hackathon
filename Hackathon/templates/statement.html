@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-    <embed src="{{ url_for('protected', filename='statements/CSP_Hackathon_2019.pdf') }}" width = "100%" height = "600px"/>
+    <embed src="{{ url_for('protected', filename='statements/' + statement_file) }}" width = "100%" height = "600px"/>
 {% endblock content %}
 
 {% block contest_materials %}

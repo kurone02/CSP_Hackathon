@@ -11,6 +11,7 @@ import os
 convert_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 duration = contestData['duration'] * 60
 nProblems = len(contestData['problem'])
+statement_file = contestData['statement_link']
 
 def contestData_timestart():
     token = list(map(int, contestData['timestart'].split('_')))
@@ -35,6 +36,7 @@ def inject_contest_data():
         minute = time_left // 60
         time_left %= 60
         second = time_left
+
     return dict(time_left=unix_time, hour=hour, minute=minute, second=second, nProblems=nProblems, duration=duration)
 
 @app.route("/")
@@ -65,7 +67,7 @@ def statement():
             submissions.append(log[0].log)
             score.append(log[0].score)
     problem_list = contestData['problem']
-    return render_template('statement.html', title='Statement', submissions=submissions, problem_list=problem_list, scores=score)
+    return render_template('statement.html', title='Statement', submissions=submissions, problem_list=problem_list, scores=score, statement_file=statement_file)
 
 @app.route("/submit", methods=['GET', 'POST'])
 @login_required
