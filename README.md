@@ -31,7 +31,5 @@
  ```
  
 ## Chạy server
- ```bash
- python run.py
- ```
+ chạy file run_server.bat
  
