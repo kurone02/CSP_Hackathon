@@ -16,7 +16,7 @@ class User(db.Model, UserMixin):
     submissions = db.relationship('Submission', backref='author', lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.image_file}')"
+        return self.username
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,7 +36,7 @@ class Submission(db.Model):
     time_penalty = db.Column(db.Integer, nullable=False)
     subs_penalty = db.Column(db.Integer, nullable=False)
     is_first_AC = db.Column(db.Boolean, nullable=False, default=False)
-    log = db.Column(db.String(100))
+    log = db.Column(db.String())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):

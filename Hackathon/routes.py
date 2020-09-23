@@ -12,6 +12,7 @@ convert_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 duration = contestData['duration'] * 60
 nProblems = len(contestData['problem'])
 statement_file = contestData['statement_link']
+frozen_time = contestData['frozen_time']
 
 def contestData_timestart():
     token = list(map(int, contestData['timestart'].split('_')))
@@ -58,7 +59,7 @@ def statement():
     submissions = []
     score = []
     for p in contestData['problem']:
-        nSubtask = p['nSubtasks']
+        #nSubtask = p['nSubtasks']
         log = list(filter(lambda x: convert_char[x.problem_id - 1] == p['problem_id'], subs))
         if len(log) == 0:
             submissions.append('')
@@ -85,6 +86,10 @@ def submit():
         new_submission = Submission.query.filter_by(author=user, problem_id=problem_id).first()
         time_left = contestData_timestart() + contestData['duration'] * 60 - int(time())
 
+        max_score_possible = 0
+        for i in range(1, nSubtasks + 1):
+            max_score_possible += problem[f'score_{i}'] if f'score_{i}' in problem else 100 // nSubtasks
+
         if time_left <= 0:
             flash(f"Nộp bài không thành công, đã hết thời gian làm bài", "danger")
             return redirect(url_for('submit'))
@@ -93,7 +98,7 @@ def submit():
             new_submission = Submission(problem_id=problem_id, max_score=0, score=0, time_penalty=0, subs_penalty=0, is_first_AC=False, author=current_user)
         sub_logs = ""
 
-        if new_submission.max_score == 100:
+        if new_submission.max_score == max_score_possible:
             flash(f"AC rồi mà nộp làm gì vậy???", "success")
             return redirect(url_for('submit'))
 
@@ -115,7 +120,7 @@ def submit():
                 flag = problem[f'checker_{i}']
 
             if checker(contestant_answer, jury_answer, flag=flag, eps=eps, trailing_zero=trailing_zero):
-                score += 100 // nSubtasks
+                score += problem[f'score_{i}'] if f'score_{i}' in problem else 100 // nSubtasks
                 if i == nSubtasks:
                     sub_logs += f"<strong>Subtask {i}: <x style='color: green'>AC</x></strong>"
                 else:
@@ -131,9 +136,9 @@ def submit():
         else:
             new_submission.max_score = score
 
-        if new_submission.max_score == 100:
+        if new_submission.max_score == max_score_possible:
             sub_list = Submission.query.filter_by(problem_id=problem_id)
-            candidate = list(filter(lambda p: p.max_score == 100, sub_list))
+            candidate = list(filter(lambda p: p.max_score == max_score_possible, sub_list))
             if len(candidate) == 1:
                 new_submission.is_first_AC = True
 
@@ -152,7 +157,7 @@ def submit():
         submissions = []
         score = []
         for p in contestData['problem']:
-            nSubtask = p['nSubtasks']
+            #nSubtask = p['nSubtasks']
             log = list(filter(lambda x: convert_char[x.problem_id - 1] == p['problem_id'], subs))
             if len(log) == 0:
                 submissions.append('')
@@ -167,6 +172,13 @@ def submit():
 def standings():
     users = User.query.all()
     scores = []
+    max_score_possible = [0 for i in range(0, nProblems)]
+    for i in range(0, nProblems):
+        problem = contestData['problem'][i]
+        nSubtasks = int(problem['nSubtasks'])
+        for j in range(1, nSubtasks + 1):
+            max_score_possible[i] += problem[f'score_{j}'] if f'score_{j}' in problem else 100 // nSubtasks
+
     for user in users:
 
         if user.username in ["TeamHackathon2020", "kurone02"]:
@@ -193,7 +205,7 @@ def standings():
         scores.append(score)
     scores = sorted(scores, key=lambda x: (x['total_score'], -x['total_penalty']), reverse=True)
     problem_list = contestData['problem']
-    return render_template('standings.html', title='standings', problem_list=problem_list, scores=scores, nUsers=len(users)-2)
+    return render_template('standings.html', title='standings', problem_list=problem_list, scores=scores, nUsers=len(users)-2, max_score_possible=max_score_possible)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():

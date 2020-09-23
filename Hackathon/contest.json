@@ -1,6 +1,7 @@
 {
-    "timestart": "2020_09_20_01_16_00",
+    "timestart": "2020_09_24_02_00_00",
     "duration": 180,
+    "frozen_time": 30,
     "statement_link": "CSP_Hackathon_2019.pdf",
     "problem": [
         {
@@ -9,12 +10,16 @@
             "nSubtasks": 4,
             "subtask_1": "1",
             "checker_1": "integer",
+            "score_1": 10,
             "subtask_2": "1",
             "checker_2": "integer",
+            "score_2": 20,
             "subtask_3": "1",
             "checker_3": "integer",
+            "score_3": 30,
             "subtask_4": "1",
-            "checker_4": "integer"
+            "checker_4": "integer",
+            "score_4": 40
         },
         {
             "problem_id": "B",
@@ -37,6 +42,7 @@
             "nSubtasks": 4,
             "subtask_1": "1",
             "checker_1": "integer",
+            "score_1": 25,
             "subtask_2": "1",
             "checker_2": "integer",
             "subtask_3": "1",

@@ -247,7 +247,7 @@
                                                 {% if scores[i][[char[j], "submitted"]|join('_')] %}
                                                     {% if scores[i][[char[j], "score"]|join('_')] == 0 %}
                                                         {% set color = "red" %} 
-                                                    {% elif scores[i][[char[j], "score"]|join('_')] != 100 %}
+                                                    {% elif scores[i][[char[j], "score"]|join('_')] != max_score_possible[j] %}
                                                         {% set color = "darkorange" %}
                                                     {% else %}
                                                         {% set color = "green" %}

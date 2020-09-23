@@ -1,5 +1,7 @@
 from flask import Flask, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from functools import wraps
@@ -12,6 +14,9 @@ app.config['SECRET_KEY'] = '47c4609da2d63b06e8bb8ed2cf93af00'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['protected'] = 'protected'
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -32,7 +37,7 @@ class CustomView(ModelView):
         return current_user.is_authenticated and (current_user.username in ["TeamHackathon2020", "kurone02"])
 
     def inaccessible_callback(self, name, **kwargs):
-        flash('Bạn không có quyền truy cập đường dẫn này!')
+        flash('Bạn không có quyền truy cập đường dẫn này!', 'danger')
         return redirect(url_for('login'))
 
 admin = Admin(app, index_view=AdminIndexView())
