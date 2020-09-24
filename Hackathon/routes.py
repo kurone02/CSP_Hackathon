@@ -1,7 +1,7 @@
 from flask import render_template, url_for, redirect, flash, request, abort, send_from_directory
 from Hackathon import app, db, bcrypt, contestData
 from Hackathon.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
-from Hackathon.models import User, Post, Submission
+from Hackathon.models import User, Post, Submission, SubmissionFrozen
 from flask_login import login_user, current_user, logout_user, login_required
 from time import time, ctime, mktime
 from Hackathon.checker import checker
@@ -83,8 +83,10 @@ def submit():
         score, nSubtasks = 0, int(problem['nSubtasks'])
         user = User.query.filter_by(username=current_user.username).first()
         problem_id = ord(problem['problem_id']) - ord('A') + 1
-        new_submission = Submission.query.filter_by(author=user, problem_id=problem_id).first()
         time_left = contestData_timestart() + contestData['duration'] * 60 - int(time())
+        new_submission = Submission.query.filter_by(author=user, problem_id=problem_id).first()
+        if time_left > frozen_time * 60:
+            frozen_submission = SubmissionFrozen.query.filter_by(author=user, problem_id=problem_id).first()        
 
         max_score_possible = 0
         for i in range(1, nSubtasks + 1):
@@ -97,6 +99,10 @@ def submit():
         if new_submission is None:
             new_submission = Submission(problem_id=problem_id, max_score=0, score=0, time_penalty=0, subs_penalty=0, is_first_AC=False, author=current_user)
         sub_logs = ""
+
+        if time_left > frozen_time * 60:
+            if frozen_submission is None:
+                frozen_submission = SubmissionFrozen(problem_id=problem_id, max_score=0, time_penalty=0, subs_penalty=0, is_first_AC=False, author=current_user)
 
         if new_submission.max_score == max_score_possible:
             flash(f"AC rồi mà nộp làm gì vậy???", "success")
@@ -142,11 +148,31 @@ def submit():
             if len(candidate) == 1:
                 new_submission.is_first_AC = True
 
+        if time_left > frozen_time * 60:
+            if score <= frozen_submission.max_score:
+                frozen_submission.subs_penalty += 5
+            else:
+                frozen_submission.max_score = score
+
+            if frozen_submission.max_score == max_score_possible:
+                sub_list = Submission.query.filter_by(problem_id=problem_id)
+                candidate = list(filter(lambda p: p.max_score == max_score_possible, sub_list))
+                if len(candidate) == 1:
+                    frozen_submission.is_first_AC = True
+
         new_submission.score = score
         new_submission.log = sub_logs
         new_submission.time_penalty = contestData['duration'] - time_left // 60
         db.session.add(new_submission)
         db.session.commit()
+
+        if time_left > frozen_time * 60:
+            frozen_submission.time_penalty = contestData['duration'] - time_left // 60
+
+        if time_left > frozen_time * 60:
+            db.session.add(frozen_submission)
+            db.session.commit()
+
         flash(f"Nộp bài thành công, bạn nhận được: {score} điểm", "success")
         if new_submission.is_first_AC:
             flash(f"Chúc mừng bạn đã là người đầu tiên AC bài {problem['problem_id']}", "success")
@@ -184,6 +210,50 @@ def standings():
         if user.username in ["TeamHackathon2020", "kurone02"]:
             continue
 
+        submissions = SubmissionFrozen.query.filter_by(author=user)
+        score = {'username': user.username}
+        score['total_score'] = 0
+        score['total_penalty'] = 0
+        for i in range(1, nProblems + 1):
+            submission = list(filter(lambda x: x.problem_id == i, submissions))
+            if len(submission) == 0:
+                score[f"{convert_char[i - 1]}_score"] = 0
+                score[f"{convert_char[i - 1]}_penalty"] = 0
+                score[f"{convert_char[i - 1]}_submitted"] = False
+                score[f"{convert_char[i - 1]}_is_first_AC"] = False
+            else:
+                score[f"{convert_char[i - 1]}_score"] = submission[0].max_score
+                score[f"{convert_char[i - 1]}_penalty"] = submission[0].time_penalty + submission[0].subs_penalty
+                score[f"{convert_char[i - 1]}_submitted"] = True
+                score[f"{convert_char[i - 1]}_is_first_AC"] = submission[0].is_first_AC
+            score['total_score'] += score[f"{convert_char[i - 1]}_score"]
+            score['total_penalty'] += score[f"{convert_char[i - 1]}_penalty"]
+        scores.append(score)
+    scores = sorted(scores, key=lambda x: (x['total_score'], -x['total_penalty']), reverse=True)
+    problem_list = contestData['problem']
+    return render_template('standings.html', title='standings', problem_list=problem_list, scores=scores, nUsers=len(users)-2, max_score_possible=max_score_possible, frozen_time=frozen_time)
+
+
+@app.route("/admin_view_standings")
+def admin_view_standings():
+
+    if not current_user.username in ["TeamHackathon2020", "kurone02"]:
+        return redirect(url_for('standings'))
+
+    users = User.query.all()
+    scores = []
+    max_score_possible = [0 for i in range(0, nProblems)]
+    for i in range(0, nProblems):
+        problem = contestData['problem'][i]
+        nSubtasks = int(problem['nSubtasks'])
+        for j in range(1, nSubtasks + 1):
+            max_score_possible[i] += problem[f'score_{j}'] if f'score_{j}' in problem else 100 // nSubtasks
+
+    for user in users:
+
+        if user.username in ["TeamHackathon2020", "kurone02"]:
+            continue
+
         submissions = Submission.query.filter_by(author=user)
         score = {'username': user.username}
         score['total_score'] = 0
@@ -205,24 +275,23 @@ def standings():
         scores.append(score)
     scores = sorted(scores, key=lambda x: (x['total_score'], -x['total_penalty']), reverse=True)
     problem_list = contestData['problem']
-    return render_template('standings.html', title='standings', problem_list=problem_list, scores=scores, nUsers=len(users)-2, max_score_possible=max_score_possible)
+    return render_template('admin_view_standings.html', title='standings', problem_list=problem_list, scores=scores, nUsers=len(users)-2, max_score_possible=max_score_possible, frozen_time=frozen_time)
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     abort(403)
-'''
-    if current_user.is_authenticated:
+    '''if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, password=hashed_password)
+        user = User(username=form.username.data, password=hashed_password, repass=True)
         db.session.add(user)
         db.session.commit()
         flash(f'Tài khoản {form.username.data} đã được tạo thành công!', 'success')
         return redirect(url_for('home'))
-    return render_template('register.html', title='Register', form=form)
-'''
+    return render_template('register.html', title='Register', form=form)'''
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -317,7 +386,7 @@ def protected(filename):
     if contestData_timestart() > int(time()):
         return send_from_directory(app.config['protected'], 'before_contest.pdf')
     else:
-        print(app.config['protected'])
+        print(os.path.join(app.config['protected'], ''), filename)
         return send_from_directory(os.path.join(app.config['protected'], ''), filename)
 
 @app.errorhandler(500)

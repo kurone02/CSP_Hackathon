@@ -14,9 +14,10 @@ class User(db.Model, UserMixin):
     repass = db.Column(db.Boolean, nullable=False, default=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     submissions = db.relationship('Submission', backref='author', lazy=True)
+    frozen_submissions = db.relationship('SubmissionFrozen', backref='author', lazy=True)
 
     def __repr__(self):
-        return self.username
+        return f'{self.username}'
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,3 +42,15 @@ class Submission(db.Model):
 
     def __repr__(self):
         return f"Submission('{self.user_id}', {self.problem_id}, {self.max_score}, {self.score}, {self.time_penalty}, {self.subs_penalty}, {self.log}')"
+
+class SubmissionFrozen(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    problem_id = db.Column(db.Integer, nullable=False)
+    max_score = db.Column(db.Integer, nullable=False)
+    time_penalty = db.Column(db.Integer, nullable=False)
+    subs_penalty = db.Column(db.Integer, nullable=False)
+    is_first_AC = db.Column(db.Boolean, nullable=False, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"SubmissionFrozen('{self.user_id}', {self.problem_id}, {self.max_score}, {self.time_penalty}, {self.subs_penalty}')"

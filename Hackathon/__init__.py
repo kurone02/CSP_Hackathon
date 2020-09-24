@@ -26,7 +26,7 @@ login_manager.login_message_category = 'danger'
 contestData = json.load(open('Hackathon/contest.json'))
 
 from Hackathon import routes
-from Hackathon.models import User, Post, Submission
+from Hackathon.models import User, Post, Submission, SubmissionFrozen
 
 class AdminIndexView(AdminIndexView):
     def is_accessible(self):
@@ -44,3 +44,4 @@ admin = Admin(app, index_view=AdminIndexView())
 admin.add_view(CustomView(User, db.session))
 admin.add_view(CustomView(Post, db.session))
 admin.add_view(CustomView(Submission, db.session))
+admin.add_view(CustomView(SubmissionFrozen, db.session))

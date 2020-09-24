@@ -2,7 +2,14 @@
  Server cho Hackathon
 
 ## Cài đặt
- Chỉ cần download là xong
+ Cài python tại: https://www.python.org/downloads/
+ Cài pip tại: https://pip.pypa.io/en/stable/installing/
+ Bật cmd, chạy: ```bash
+    pip install -r requirements.txt
+ ```
+ Chạy ``bash
+    python main.py
+ ```
  
 ## Thiết lập kỳ thi
  - Chỉnh sửa file **contest.json** trong thư mục **Hackathon** trước khi chạy server
