@@ -2,13 +2,11 @@
  Server cho Hackathon
 
 ## Cài đặt
- Cài python tại: https://www.python.org/downloads/
- Cài pip tại: https://pip.pypa.io/en/stable/installing/
- Bật cmd, chạy: ```bash
+ - Cài python tại: https://www.python.org/downloads/
+ - Cài pip tại: https://pip.pypa.io/en/stable/installing/
+ - Bật cmd, chạy: 
+ ```bash
     pip install -r requirements.txt
- ```
- Chạy ``bash
-    python main.py
  ```
  
 ## Thiết lập kỳ thi
@@ -43,5 +41,8 @@
  ```
  
 ## Chạy server
- chạy file run_server.bat
+ - Chạy 
+ ```bash
+    python main.py
+ ```
  
