@@ -38,8 +38,8 @@
             "problem_name": "Clock",
             "nSubtasks": "1",
             "subtask_1": "1",
-            "checker_1": "integer"
-            "score_1": 100,
+            "checker_1": "integer",
+            "score_1": 100
         },
     ]
 }
