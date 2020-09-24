@@ -21,20 +21,25 @@
             "problem_name": "<Tên bài>",
             "nSubtasks": "Số lượng subtask",
             "subtask_<số thứ tự>": "<đáp án>",
-            "Checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">",
+            "checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">",
+            "score_<số thứ tự>": "<Số điểm của subtask>",
             "subtask_<số thứ tự>": "<đáp án>",
-            "Checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">",
+            "checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">",
+            "score_<số thứ tự>": "<Số điểm của subtask>",
             "subtask_<số thứ tự>": "<đáp án>",
-            "Checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">",
+            "checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">",
+            "score_<số thứ tự>": "<Số điểm của subtask>",
             "subtask_<số thứ tự>": "<đáp án>",
-            "Checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">"
+            "checker_<số thứ tự>": "<1 trong 3 checker sau: "integer", "real", "string">",
+            "score_<số thứ tự>": "<Số điểm của subtask>"
         },
         {
             "problem_id": "B",
             "problem_name": "Clock",
             "nSubtasks": "1",
             "subtask_1": "1",
-            "Checker_1": "integer"
+            "checker_1": "integer"
+            "score_1": 100,
         },
     ]
 }
